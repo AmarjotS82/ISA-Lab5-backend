@@ -39,7 +39,7 @@ function handlePostRequest(req, res) {
       const query = jsonData.query;
 
       if (query) { 
-        let queryResponse = eexecQuery(query)
+        let queryResponse = execQuery(query)
           sendRes(res, queryResponse)
       } else {
         sendRes(res, 'Error on server side.')
