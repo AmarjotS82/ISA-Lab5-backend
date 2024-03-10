@@ -39,7 +39,15 @@ function handlePostRequest(req, res) {
       const query = jsonData.query;
 
       if (query) { 
-        let queryResponse = execQuery(query)
+        let queryResponse = ""
+         execQuery(query) .then(result => {
+              console.log('Result:', result);
+              queryResponse += result;
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              queryResponse += error;
+          });
           sendRes(res, queryResponse)
       } else {
         sendRes(res, 'Error on server side.')
@@ -85,8 +93,15 @@ function route(req, res) {
 function sendSelectQuery(req, res) {
   const parsedUrl = url.parse(req.url, true);
   const query = parsedUrl.query;
-
-  const response = execQuery(query)
+  let response = "";
+  execQuery(query) .then(result => {
+      console.log('Result:', result);
+      response += result;
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      response += error;
+  });
 
   const jsonResponseObj = {
     success: response !== "", 
@@ -107,7 +122,7 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-function execQuery(query){
+ async function execQuery(query){
 
 
     const client = new Client({
@@ -119,15 +134,17 @@ function execQuery(query){
 
     client.connect();
 
-    const queryResponse = client.query(query, (err, res) => {
-        console.log(err, res);
-        if (err) {
-            console.log('Error executing query:', err.stack);
-        } else {
-            console.log('Query result:', res.rows);
-        }
-        client.end();
-        return res;
-    });
-    return queryResponse;
+    try {
+      await client.connect();
+
+      const res = await client.query(query);
+      console.log('Query result:', res.rows);
+
+      return res.rows;
+  } catch (err) {
+      console.error('Error executing query:', err.stack);
+      throw err; // You may choose to handle errors differently
+  } finally {
+      await client.end();
+  }
 }
