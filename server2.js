@@ -44,12 +44,14 @@ function handlePostRequest(req, res) {
         .then(result => {
             console.log('Query result:', result);
             queryResponse += result
+            sendRes(res, queryResponse)
         })
         .catch(error => {
             console.error('Error executing query:', error);
             queryResponse += error
+            sendRes(res, queryResponse)
         });
-          sendRes(res, queryResponse)
+         
       } else {
         sendRes(res, 'Error on server side.')
       }
@@ -100,21 +102,31 @@ function sendSelectQuery(req, res) {
   .then(result => {
       console.log('Query result:', result);
       response += result
+      const jsonResponseObj = {
+        success: response !== "", 
+        queryResponse: response,
+      };
+    
+      const jsonResponse = JSON.stringify(jsonResponseObj);
+    
+      res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+      res.end(jsonResponse);
   })
   .catch(error => {
       console.error('Error executing query:', error);
       response += error
+      const jsonResponseObj = {
+        success: response !== "", 
+        queryResponse: response,
+      };
+    
+      const jsonResponse = JSON.stringify(jsonResponseObj);
+    
+      res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+      res.end(jsonResponse);
   });
 
-  const jsonResponseObj = {
-    success: response !== "", 
-    queryResponse: response,
-  };
-
-  const jsonResponse = JSON.stringify(jsonResponseObj);
-
-  res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-  res.end(jsonResponse);
+  
 }
 
 const server = http.createServer(route);
