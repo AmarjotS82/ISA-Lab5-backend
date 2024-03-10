@@ -40,14 +40,15 @@ function handlePostRequest(req, res) {
 
       if (query) { 
         let queryResponse = ""
-         execQuery(query) .then(result => {
-              console.log('Result:', result);
-              queryResponse += result;
-          })
-          .catch(error => {
-              console.error('Error:', error);
-              queryResponse += error;
-          });
+        execQuery(query)
+        .then(result => {
+            console.log('Query result:', result);
+            queryResponse += result
+        })
+        .catch(error => {
+            console.error('Error executing query:', error);
+            queryResponse += error
+        });
           sendRes(res, queryResponse)
       } else {
         sendRes(res, 'Error on server side.')
@@ -94,13 +95,15 @@ function sendSelectQuery(req, res) {
   const parsedUrl = url.parse(req.url, true);
   const query = parsedUrl.query;
   let response = "";
-  execQuery(query) .then(result => {
-      console.log('Result:', result);
-      response += result;
+
+  execQuery(query)
+  .then(result => {
+      console.log('Query result:', result);
+      response += result
   })
   .catch(error => {
-      console.error('Error:', error);
-      response += error;
+      console.error('Error executing query:', error);
+      response += error
   });
 
   const jsonResponseObj = {
@@ -122,29 +125,25 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
- async function execQuery(query){
+function execQuery(query) {
+  return new Promise((resolve, reject) => {
+      const client = new Client({
+          connectionString: 'postgresql://test4:EfITGgkm5jYODtwhwUoNqw@isa-labs-4391.g95.gcp-us-west2.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full',
+          ssl: {
+              rejectUnauthorized: false,
+          },
+      });
 
-
-    const client = new Client({
-        connectionString: 'postgresql://test4:EfITGgkm5jYODtwhwUoNqw@isa-labs-4391.g95.gcp-us-west2.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full',
-        ssl: {
-            rejectUnauthorized: false,
-        },
-    });
-
-    client.connect();
-
-    try {
-      await client.connect();
-
-      const res = await client.query(query);
-      console.log('Query result:', res.rows);
-
-      return res.rows;
-  } catch (err) {
-      console.error('Error executing query:', err.stack);
-      throw err; // You may choose to handle errors differently
-  } finally {
-      await client.end();
-  }
+      client.connect()
+          .then(() => client.query(query))
+          .then(res => {
+              console.log('Query result:', res.rows);
+              resolve(res.rows);
+          })
+          .catch(err => {
+              console.error('Error executing query:', err.stack);
+              reject(err);
+          })
+          .finally(() => client.end());
+  });
 }
