@@ -1,0 +1,17 @@
+{
+    "name": "isa-lab5-backend",
+    "version": "1.0.0",
+    "dependencies": {
+      "pg": "^8.7.1"
+    },
+    "devDependencies": {
+      "nodemon": "^2.0.14"
+    },
+    "keywords": [
+      "node",
+      "pg",
+      "postgresql"
+    ],
+    "author": "Amarjot",
+    "license": "MIT"
+  }

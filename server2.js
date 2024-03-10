@@ -15,7 +15,7 @@ function handleGetRequest(req, res) {
 
 function handlePostRequest(req, res) {
 
-
+  console.log(req.url)
   if (req.url !== '/execInsert') {
     res.writeHead(404, {'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*'});
     res.end('Not Found');
