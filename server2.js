@@ -103,6 +103,7 @@ const server = http.createServer(route);
 const PORT = process.env.PORT || 8000; // use port provided by service or 8000
 
 server.listen(PORT, () => {
+  console.log("testing")
   console.log(`Server is running on port ${PORT}`);
 });
 
