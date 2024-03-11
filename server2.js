@@ -95,8 +95,9 @@ function route(req, res) {
 
 function sendSelectQuery(req, res) {
   const parsedUrl = url.parse(req.url, true);
-  const query = parsedUrl.query;
-  let query_str = JSON.stringify(query)
+  const query_json = parsedUrl.query;
+  let query_obj = JSON.parse(query_json)
+  let query_str = query_obj.query;
   let response = "";
 
   execQuery(query_str)
