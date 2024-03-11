@@ -39,11 +39,11 @@ function handlePostRequest(req, res) {
       const query = jsonData.query;
 
       if (query) { 
-        let queryResponse = "Sucessfully executed query"
+        let queryResponse = ""
         execQuery(query)
         .then(result => {
             console.log('Query result:', result);
-            
+            queryResponse += "Sucessfully executed query"
             sendRes(res,true, queryResponse)
         })
         .catch(error => {
