@@ -104,8 +104,8 @@ function sendSelectQuery(req, res) {
       response += result
       const jsonResponseObj = {
         success: true, 
-        queryResponse: result,
-        query: query_str
+        queryMessage: "Executed query successfully",
+        queryResult: result
       };
     
       const jsonResponse = JSON.stringify(jsonResponseObj);
@@ -118,8 +118,8 @@ function sendSelectQuery(req, res) {
       response += error
       const jsonResponseObj = {
         success: false, 
-        queryResponse: response,
-        query: query_str
+        queryMessage: response,
+        queryResult: ""
       };
     
       const jsonResponse = JSON.stringify(jsonResponseObj);
