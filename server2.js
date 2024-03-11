@@ -44,12 +44,12 @@ function handlePostRequest(req, res) {
         .then(result => {
             console.log('Query result:', result);
             queryResponse += result
-            sendRes(res, queryResponse)
+            sendRes(res,true, queryResponse)
         })
         .catch(error => {
             console.error('Error executing query:', error);
             queryResponse += error
-            sendRes(res, queryResponse)
+            sendRes(res,false, queryResponse)
         });
          
       } else {
@@ -62,8 +62,8 @@ function handlePostRequest(req, res) {
   });
 }
 
-function sendRes(res, message) {
-  const jsonResponse = JSON.stringify({ success: true, message: message });
+function sendRes(res,issuccess, message) {
+  const jsonResponse = JSON.stringify({ success: issuccess, message: message });
   res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
   res.end(jsonResponse);
 }
@@ -96,16 +96,17 @@ function route(req, res) {
 function sendSelectQuery(req, res) {
   const parsedUrl = url.parse(req.url, true);
   const query = parsedUrl.query;
+  let query_str = JSON.stringify(query)
   let response = "";
 
-  execQuery(query)
+  execQuery(query_str)
   .then(result => {
       console.log('Query result:', result);
       response += result
       const jsonResponseObj = {
         success: true, 
         queryResponse: response,
-        query: query
+        query: query_str
       };
     
       const jsonResponse = JSON.stringify(jsonResponseObj);
@@ -119,7 +120,7 @@ function sendSelectQuery(req, res) {
       const jsonResponseObj = {
         success: false, 
         queryResponse: response,
-        query: query
+        query: query_str
       };
     
       const jsonResponse = JSON.stringify(jsonResponseObj);
